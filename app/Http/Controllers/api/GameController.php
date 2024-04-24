@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\Game as GameEvent;
 use App\Events\TurnEvent;
+use Illuminate\Support\Facades\Log;
 
 class GameController extends Controller
 {
@@ -53,18 +54,20 @@ class GameController extends Controller
             $juego = new Game();
             $juego->user_1 = $user->id;
             $juego->save();
-            //$games = Game::where('start_at', null)->where('user_1', '!=', Auth::user()->id)->get();
-            //$games = Game::where('start_at', null)->where('user_1', '!=', Auth::user()->id)->get();
+            
+            $user1 = User::find($juego->user_1);
+            $gameData = new \stdClass();
+            $gameData = $juego;
+            $gameData->name = $user1->name;
+            
             if($juego->start_at == null){
-                event(new GamesEvent($juego));
+                event(new GamesEvent($gameData));
             }
-            // if(count($games) > 0){
-            //     event(new GamesEvent($games));
-            // }
+            
             return response()->json([
                 'mesg' => "Juego creado!!!",
                 'result' => true,
-                'data' => $juego
+                'data' => $gameData
             ], 201);
         } else {
             return response()->json([
@@ -81,7 +84,7 @@ class GameController extends Controller
                 $juego->user_2 = Auth::user()->id;
                 $juego->is_active = true;
                 $juego->start_at = now();
-                $juego->save();
+                $juego->save(); 
                 event(new StartGameEvent($juego->id));
                 return response()->json([
                     "msg" => "Partida iniciada!!!",
@@ -169,6 +172,32 @@ class GameController extends Controller
 
     public function turn(int $id)
     {
+        if (Auth::check()) {
+            $juego = Game::find($id);
+            if($juego){
+                $user = $juego->user_2;
+                if($juego->turn){
+                    $user = $juego->user_1;
+                }
+                $juego->turn = !$juego->turn;
+                $juego->save();
+                event(new TurnEvent($user));
+                return response()->json([
+                    "msg" => "Movimiento hecho!!!",
+                    'result' => true
+                ], 201);
+            }
+            return response()->json([
+                "msg" => "Partida no encontrada!!!",
+                'result' => false
+            ], 404);
+        }
+        return response()->json([
+            "msg" => "Usuario no auntenticado.",
+            'result' => false
+        ], 401);
+    }
+    public function board($id) {
         if (Auth::check()) {
             $juego = Game::find($id);
             if($juego){

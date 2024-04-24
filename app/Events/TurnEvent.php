@@ -25,4 +25,8 @@ class TurnEvent implements ShouldBroadcast
             new PrivateChannel('turn-game'),
         ];
     }
+    public function broadcastAs()
+    {
+        return 'turn-game-event';
+    }
 }

@@ -46,7 +46,8 @@ Route::middleware(['auth:sanctum', 'verificarCuentaActiva'])->group(function () 
         Route::delete('/cancel/{id}', [GameController::class, 'cancel'])->where('id', '[0-9]+');
         Route::delete('/cancel', [GameController::class, 'cancelAll']);
         Route::post('/win', [GameController::class, 'win'])->where('id', '[0-9]+');
-        Route::post('/turn/{id}', [GameController::class, 'turn'])->where('id', '[0-9]+');
+        Route::put('/turn/{id}', [GameController::class, 'turn'])->where('id', '[0-9]+');
+        Route::put('/board/{id}', [GameController::class, 'board'])->where('id', '[0-9]+');
     });
 });
 
