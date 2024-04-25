@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Events\Game as GameEvent;
+use App\Events\HistoryEvent;
 use App\Events\TurnEvent;
 use Illuminate\Support\Facades\Log;
 
@@ -112,6 +113,7 @@ class GameController extends Controller
                 $juego->is_active = true;
                 $juego->start_at = now();
                 $juego->save(); 
+                event(new HistoryEvent($juego));
                 event(new StartGameEvent($juego->id));
                 return response()->json([
                     "msg" => "Partida iniciada!!!",
@@ -132,6 +134,8 @@ class GameController extends Controller
             $juego->is_active = 0;
             $juego->save();
             event(new GameCanelEvent($juego));
+            event(new HistoryEvent($juego));
+
             return response()->json([
                 "msg" => "Partida finalizada!!!",
                 'result' => true
@@ -146,9 +150,11 @@ class GameController extends Controller
     {
         $juego = Game::find($id);
         if($juego){
+            $juego->is_active = 0;
             $juego->won = $request->win;
             $juego->save();
             event(new WinEvent($juego));
+            event(new HistoryEvent($juego));
             return response()->json([
                 "msg" => "Partida finalizada!!!",
                 'result' => true

@@ -259,7 +259,7 @@ class UserController extends Controller
             ], 404);
         }
     }
-    public function historial(Request $request)
+    public function historial()
     {
         if (Auth::check()) {
             $user = Auth::user();
