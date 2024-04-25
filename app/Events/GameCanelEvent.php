@@ -10,23 +10,23 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class WinEvent implements ShouldBroadcast
+class GameCanelEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $win;
-    public function __construct($win)
+    public $cancel;
+    public function __construct($cancel)
     {
-        $this->win = $win;
+        $this->cancel = $cancel;
     }
     public function broadcastOn(): array
     {
         return [
-            new Channel('win-game'),
+            new Channel('game-cancel-game'),
         ];
     }
     public function broadcastAs()
     {
-        return 'win-game-event';
+        return 'game-cancel-event';
     }
 }

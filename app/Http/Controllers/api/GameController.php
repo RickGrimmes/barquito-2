@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\api;
 
+use App\Events\GameCanelEvent;
 use App\Events\GamesEvent;
 use App\Events\StartGameEvent;
+use App\Events\WinEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Game;
 use App\Models\User;
@@ -129,6 +131,7 @@ class GameController extends Controller
         if($juego){
             $juego->is_active = 0;
             $juego->save();
+            event(new GameCanelEvent($juego));
             return response()->json([
                 "msg" => "Partida finalizada!!!",
                 'result' => true
@@ -139,26 +142,13 @@ class GameController extends Controller
             'result' => false
         ], 404);
     }  
-    private function ganadorValidate(Request $request)
-    {
-        return Validator::make($request->all(), [
-            "name" => "required|string|min:3|max:72"
-        ]);
-    }   
     public function win(Request $request, int $id)
     {
         $juego = Game::find($id);
         if($juego){
-            $validate = $this->ganadorValidate($request);
-            if ($validate->fails()) {
-                return response()->json([
-                    'msg' => "Los datos ingresados no cumplen con lo pedido.",
-                    'result' => false,
-                    'errors' => $validate->errors()  
-                ], 422);
-            }
             $juego->won = $request->win;
             $juego->save();
+            event(new WinEvent($juego));
             return response()->json([
                 "msg" => "Partida finalizada!!!",
                 'result' => true
