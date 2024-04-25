@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean("is_active")->default(false);
             $table->date('start_at')->nullable();
             $table->string('won')->nullable();            
-            $table->boolean("turn")->default(false);
+            $table->integer("turn")->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

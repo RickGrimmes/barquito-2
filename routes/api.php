@@ -41,6 +41,7 @@ Route::middleware(['auth:sanctum', 'verificarCuentaActiva'])->group(function () 
     });
     Route::prefix('game')->group(function (){
         Route::post('/create', [GameController::class, 'store']);
+        Route::get('/info/{id}', [GameController::class, 'index'])->where('id', '[0-9]+');
         Route::get('/games', [GameController::class, 'games']);
         Route::put('/start/{id}', [GameController::class, 'start'])->where('id', '[0-9]+');
         Route::delete('/cancel/{id}', [GameController::class, 'cancel'])->where('id', '[0-9]+');

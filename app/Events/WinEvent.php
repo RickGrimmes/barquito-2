@@ -10,23 +10,23 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TurnEvent implements ShouldBroadcast
+class WinEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $userId;
-    public function __construct($userId)
+    public $boads;
+    public function __construct($boads)
     {
-        $this->userId = $userId;
+        $this->boads = $boads;
     }
     public function broadcastOn(): array
     {
         return [
-            new Channel('turn-game'),
+            new Channel('boad-game'),
         ];
     }
     public function broadcastAs()
     {
-        return 'turn-game-event';
+        return 'boad-game-event';
     }
 }

@@ -16,6 +16,30 @@ use Illuminate\Support\Facades\Log;
 
 class GameController extends Controller
 {
+    public function index(int $id){
+        if(Auth::user()){
+            $game = Game::find($id);
+            if($game != null){
+               return response()->json([
+                    "msg" => "Datos encontrados!!!",
+                    'result' => true,
+                    'data' => $game
+                ], 201);
+            } else {
+                return response()->json([
+                    'result' => false,
+                    'msg' => 'No existe el juego.',
+                ], 404);
+            }
+        }else {
+            return response()->json([
+                'result' => false,
+                'msg' => 'Jugador no autenticado.',
+            ], 401);
+        }
+            
+        
+    }
     public function games(){
         if(Auth::user()){
             $games = Game::where('start_at', null)->where('user_1', '!=', Auth::user()->id)->get();
@@ -82,6 +106,7 @@ class GameController extends Controller
             $juego = Game::find($id);
             if($juego){
                 $juego->user_2 = Auth::user()->id;
+                $juego->turn = Auth::user()->id;
                 $juego->is_active = true;
                 $juego->start_at = now();
                 $juego->save(); 
@@ -102,7 +127,7 @@ class GameController extends Controller
     {
         $juego = Game::find($id);
         if($juego){
-            $juego->delete();
+            $juego->is_active = 0;
             $juego->save();
             return response()->json([
                 "msg" => "Partida finalizada!!!",
@@ -151,7 +176,7 @@ class GameController extends Controller
             $juegos = Game::where('start_at', null)->where('user_1', Auth::user()->id)->get();
             if(count($juegos) > 0){
                 foreach($juegos as $juego){
-                    $juego->delete();
+                    $juego->is_active = 0;
                     $juego->save();
                 }
                 return response()->json([
@@ -169,19 +194,20 @@ class GameController extends Controller
             'result' => false
         ], 401);
     }
-
     public function turn(int $id)
     {
         if (Auth::check()) {
             $juego = Game::find($id);
             if($juego){
-                $user = $juego->user_2;
-                if($juego->turn){
-                    $user = $juego->user_1;
-                }
-                $juego->turn = !$juego->turn;
+                if($juego->turn == Auth::user()->id){
+                    if($juego->user_2 == $juego->turn){
+                        $juego->turn = $juego->user_1;
+                    }else{
+                        $juego->turn = $juego->user_2   ;
+                    }
                 $juego->save();
-                event(new TurnEvent($user));
+                event(new TurnEvent($juego));
+                }
                 return response()->json([
                     "msg" => "Movimiento hecho!!!",
                     'result' => true
@@ -197,20 +223,23 @@ class GameController extends Controller
             'result' => false
         ], 401);
     }
-    public function board($id) {
+    public function board(int $id)
+    {
         if (Auth::check()) {
             $juego = Game::find($id);
             if($juego){
-                $user = $juego->user_2;
-                if($juego->turn){
-                    $user = $juego->user_1;
-                }
-                $juego->turn = !$juego->turn;
+                if($juego->turn == Auth::user()->id){
+                    if($juego->user_2 == $juego->turn){
+                        $juego->boad1 = $juego->boad1 - 1;
+                    }else{
+                        $juego->boad2 = $juego->boad2 - 1;
+                    }
                 $juego->save();
-                event(new TurnEvent($user));
+                }
                 return response()->json([
-                    "msg" => "Movimiento hecho!!!",
-                    'result' => true
+                    "msg" => "Bien hecho!!!",
+                    'result' => true,
+                    'data' => $juego
                 ], 201);
             }
             return response()->json([
