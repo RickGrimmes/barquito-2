@@ -131,6 +131,7 @@ class GameController extends Controller
     {
         $juego = Game::find($id);
         if($juego){
+            $juego->start_at = now();
             $juego->is_active = 0;
             $juego->save();
             event(new GameCanelEvent($juego));
@@ -172,6 +173,7 @@ class GameController extends Controller
             $juegos = Game::where('start_at', null)->where('user_1', Auth::user()->id)->get();
             if(count($juegos) > 0){
                 foreach($juegos as $juego){
+                    $juego->start_at = now();
                     $juego->is_active = 0;
                     $juego->save();
                 }

@@ -219,6 +219,23 @@ class UserController extends Controller
             ], 401);
         }
     }
+    public function search(int $id)
+    {
+        if (Auth::check()) {
+            $game = Game::find($id);
+            $user = User::find($game->user_1);
+            return response()->json([
+                'result' => true,
+                'msg' => 'Informacion del usuario.',
+                'data' => $user,
+            ], 200);
+        } else {
+            return response()->json([
+                'result' => false,
+                'msg' => 'Usuario no autenticado.',
+            ], 401);
+        }
+    }
     public function userInfo()
     {
         if (Auth::check()) {

@@ -31,7 +31,7 @@ Route::get('/prueba', function () {
 Route::middleware(['auth:sanctum', 'verificarCuentaActiva'])->group(function () {
     //RUD de usuarios
     Route::prefix('user')->group(function (){
-        Route::get('/search', [UserController::class, 'index']);
+        Route::get('/search/{id}', [UserController::class, 'search'])->where('id', '[0-9]+');
         Route::put('/update', [UserController::class, 'update']); // Puede recibir name, email y password 
 
         Route::post('/logout', [UserController::class, 'logout']); 
