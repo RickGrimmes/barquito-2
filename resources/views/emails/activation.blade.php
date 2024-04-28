@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/app.css">
-    <title>Activa tu cuenta</title>
+    <title>Verificación de correo electrónico</title>
+    <style>
+        .center {
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>Bienvenido a el juego!!!</h1>
-    <img src="../img/parkkk.gif" alt="Logo de la aplicación" class="img2">
-    <div>
-        <p>
-            Hola, para poder continuar y poder jugar, primero debes confirmar tu cuenta.
-        </p>
-        <br><br>
-        <span>— APIarcamiento Team</span>
-    </div>
+    <h2>Hola, un gusto tenerte con nosotros :D</h2>
+    <p>Gracias por registrarte en nuestra aplicación. Por favor, haz clic en el enlace de abajo para verificar tu dirección de correo electrónico:</p>
+    <a href="{{ $url }}">Verificar correo electrónico</a>
+    <p>Si no te has registrado en nuestra aplicación, por favor, ignora este correo electrónico :P</p>
     <br><br>
-    <a href="{{ $url }}" class="btn btn-primary btn-personalizado">Confirmar cuenta</a>
+    <h3>De parte de tus amigos:</h3>
+    <h4>Equipo de Barquito :D</h4>
+    <h4>Super Monkey Ball</h4>
+    <img class="center" src="https://images.gamebanana.com/img/ss/mods/615db15d89b23.jpg" alt="si puedes ver esto, significa que nosotros también podemos verte, hola">
 </body>
 </html>

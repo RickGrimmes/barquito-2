@@ -30,7 +30,7 @@ class ActivationController extends Controller
         
         return view('emails.success', ['message' => 'Cuenta activada exitosamente.']);
     }
-
+ 
     private function isValidSignature(Request $request)
     {
         $email = $request->query('email');

@@ -35,7 +35,7 @@ class UserController extends Controller
             $message->to($user->email)
                     ->subject('Activación de cuenta');
         });
-    }
+    } 
     private function registerValidate(Request $request)
     {
         return Validator::make($request->all(), [

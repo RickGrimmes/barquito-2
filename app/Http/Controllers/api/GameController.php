@@ -21,7 +21,7 @@ class GameController extends Controller
 {
     public function index(int $id){
         if(Auth::user()){
-            $game = Game::find($id);
+            $game = Game::find($id); 
             if($game != null){
                return response()->json([
                     "msg" => "Datos encontrados!!!",
